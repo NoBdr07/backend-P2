@@ -17,6 +17,11 @@ public class UserService {
 	public Optional<User> getUserFromUserId(int userId) {
         return userRepository.findById(userId);
     }
+	
+	public User saveUser(User user) {
+        // Make sure to hash the password before saving
+        return userRepository.save(user);
+    }
 
 		 
 }
