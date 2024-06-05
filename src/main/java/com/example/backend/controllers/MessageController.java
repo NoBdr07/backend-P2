@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
-@Tag(name = "MessagesController", description = "REST APIs related to messages")
+@Tag(name = "MessagesController", description = "Routes related to messages")
 public class MessageController {
 
 	private MessageService messageService;

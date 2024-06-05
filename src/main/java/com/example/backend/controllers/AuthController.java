@@ -37,7 +37,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@Tag(name = "AuthController", description = "REST APIs related to Auth")
+@Tag(name = "AuthController", description = "Routes related to authentication")
 public class AuthController {
 
 	private JwtService jwtService;
@@ -88,46 +88,51 @@ public class AuthController {
 	// Login with a known user
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "User logged in successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TokenResponse.class))),
-			@ApiResponse(responseCode = "400", description = "Invalid input", content = @Content(schema = @Schema())),
-			})
+			@ApiResponse(responseCode = "400", description = "Invalid input", content = @Content(schema = @Schema())), })
 	@PostMapping("api/auth/login")
 	public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginRequest request) {
 		User user = userService.getUserByEmail(request.getLogin()).get();
-		
+
 		if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		
+
 		String token = jwtService.generateToken(user.getEmail());
 		Map<String, String> tokenResponse = new HashMap<>();
 		tokenResponse.put("token", token);
 
 		return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
 	}
-	
+
 	// Get the user's info
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "User info loaded successfully", content = @Content(mediaType = "application/json", 
+					examples = @ExampleObject(value = "{\"userId\": \"1\", \"email\": \"test@test.com\", \"name\": \"test\", \"createdAt\": \"2021-10-01T00:00:00Z\", \"updatedAt\": \"2021-10-01T00:00:00Z\"}"), 
+					schema = @Schema(implementation = UserResponse.class))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())), })
 	@GetMapping("api/auth/me")
 	public UserResponse getCurrentUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null && authentication.getPrincipal() instanceof Jwt) {
 			Jwt jwt = (Jwt) authentication.getPrincipal();
 			String login = jwt.getClaim("login");
-			
+
 			if (login == null) {
-	            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login claim not found in token");
-	        }
-			
+				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login claim not found in token");
+			}
+
 			Optional<User> optionalUser = userService.getUserByEmail(login);
-			
+
 			if (!optionalUser.isPresent()) {
-	            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found");
-	        }
-			
+				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found");
+			}
+
 			User user = optionalUser.get();
 
-			UserResponse userResponse = userService.setUserResponse(user.getUserId(), user.getEmail(), user.getName(), user.getCreatedAt(), user.getUpdatedAt());
+			UserResponse userResponse = userService.setUserResponse(user.getUserId(), user.getEmail(), user.getName(),
+					user.getCreatedAt(), user.getUpdatedAt());
 
-	        return userResponse;
+			return userResponse;
 		}
 		throw new IllegalStateException("User is not authenticated");
 	}

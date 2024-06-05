@@ -1,5 +1,7 @@
 package com.example.backend.models.entities;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +11,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "rentals")
+@DynamicUpdate
 public class Rental {
 	
 	@Id
@@ -25,6 +28,17 @@ public class Rental {
 	@Column(name="price")
 	private int price;
 	
+	@Column(name="picture")
+	private String picture;
+	
+	public String getPicture() {
+		return picture;
+	}
+
+	public void setPicture(String picture) {
+		this.picture = picture;
+	}
+
 	@Column(name="description")
 	private String description;
 	
