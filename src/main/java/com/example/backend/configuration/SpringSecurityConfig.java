@@ -24,7 +24,7 @@ public class SpringSecurityConfig {
 
 	// List of routes that do not require authentication
 	private static final String[] AUTH_WHITELIST = { "/v3/api-docs/**", "/swagger-ui/**", "/api/auth/register",
-			"/api/auth/login" };
+			"/api/auth/login"};
 
 	
 	@Bean
@@ -32,7 +32,8 @@ public class SpringSecurityConfig {
 		return http.csrf(csrf -> csrf.disable())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(
-						auth -> auth.requestMatchers(AUTH_WHITELIST).permitAll().anyRequest().authenticated())
+						auth -> auth.requestMatchers(AUTH_WHITELIST).permitAll()
+						.anyRequest().authenticated())
 				.oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())).build();
 	}
 

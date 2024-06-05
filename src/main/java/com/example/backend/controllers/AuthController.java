@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.example.backend.models.LoginRequest;
-import com.example.backend.models.RegisterRequest;
-import com.example.backend.models.User;
-import com.example.backend.models.UserResponse;
+import com.example.backend.models.entities.User;
+import com.example.backend.models.requests.LoginRequest;
+import com.example.backend.models.requests.RegisterRequest;
+import com.example.backend.models.responses.UserResponse;
 import com.example.backend.services.JwtService;
 import com.example.backend.services.UserService;
 import com.nimbusds.oauth2.sdk.TokenResponse;
@@ -56,7 +56,7 @@ public class AuthController {
 			@ApiResponse(responseCode = "200", description = "User registered successfully", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = "{\"token\": \"jwt\"}"), schema = @Schema(implementation = TokenResponse.class))),
 			@ApiResponse(responseCode = "400", description = "Input missing", content = @Content(schema = @Schema())), })
 	public ResponseEntity<Map<String, String>> register(@Valid @RequestBody RegisterRequest request) {
-		// Create new user in the db
+		// Create new user in the database
 		User user = new User();
 		user.setEmail(request.getEmail());
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -125,12 +125,8 @@ public class AuthController {
 			
 			User user = optionalUser.get();
 
-			UserResponse userResponse = new UserResponse();
-	        userResponse.setUserId(user.getUserId());
-	        userResponse.setEmail(user.getEmail());
-	        userResponse.setName(user.getName());
-	        userResponse.setCreatedAt(user.getCreatedAt());
-	        userResponse.setUpdatedAt(user.getUpdatedAt());
+			UserResponse userResponse = userService.setUserResponse(user.getUserId(), user.getEmail(), user.getName(), user.getCreatedAt(), user.getUpdatedAt());
+
 	        return userResponse;
 		}
 		throw new IllegalStateException("User is not authenticated");

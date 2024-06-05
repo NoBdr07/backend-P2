@@ -1,4 +1,4 @@
-package com.example.backend.models;
+package com.example.backend.models.responses;
 
 public class UserResponse {
 	private int userId;

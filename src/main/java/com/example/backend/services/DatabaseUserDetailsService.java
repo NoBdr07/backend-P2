@@ -6,21 +6,18 @@ import java.util.Optional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.backend.models.User;
+import com.example.backend.models.entities.User;
 import com.example.backend.repositories.UserRepository;
 
 @Service
 public class DatabaseUserDetailsService implements UserDetailsService{
 	
 	private final UserRepository userRepository;
-	private final BCryptPasswordEncoder passwordEncoder;
 	
-	public DatabaseUserDetailsService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+	public DatabaseUserDetailsService(UserRepository userRepository) {
 		this.userRepository = userRepository;
-		this.passwordEncoder = passwordEncoder;
 	}
 	
 	@Override

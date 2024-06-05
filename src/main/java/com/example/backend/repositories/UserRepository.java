@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.backend.models.User;
+import com.example.backend.models.entities.User;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, Integer>{
