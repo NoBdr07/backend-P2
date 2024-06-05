@@ -22,6 +22,12 @@ public class UserService {
         // Make sure to hash the password before saving
         return userRepository.save(user);
     }
+	
+	public Optional<User> getUserByEmail(String email) {
+		return userRepository.findByEmail(email);
+	}
+	
+	
 
 		 
 }
