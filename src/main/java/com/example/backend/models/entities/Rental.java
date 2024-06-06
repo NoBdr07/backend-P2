@@ -13,38 +13,36 @@ import jakarta.persistence.Table;
 @Table(name = "rentals")
 @DynamicUpdate
 public class Rental {
-	
+
 	@Id
-	@Column(name="id")
+	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int rentalId;
-	
-	@Column(name="name")
+
+	@Column(name = "name")
 	private String name;
-	
-	@Column(name="surface")
+
+	@Column(name = "surface")
 	private int surface;
-	
-	@Column(name="price")
+
+	@Column(name = "price")
 	private int price;
-	
-	@Column(name="picture")
+
+	@Column(name = "picture")
 	private String picture;
-	
-	public String getPicture() {
-		return picture;
-	}
 
-	public void setPicture(String picture) {
-		this.picture = picture;
-	}
-
-	@Column(name="description")
+	@Column(name = "description")
 	private String description;
-	
-	@Column(name="owner_id")
+
+	@Column(name = "owner_id")
 	private int ownerId;
-	
+
+	@Column(name = "created_at")
+	private String createdAt;
+
+	@Column(name = "updated_at")
+	private String updatedAt;
+
 	public int getRentalId() {
 		return rentalId;
 	}
@@ -75,6 +73,14 @@ public class Rental {
 
 	public void setPrice(int price) {
 		this.price = price;
+	}
+
+	public String getPicture() {
+		return picture;
+	}
+
+	public void setPicture(String picture) {
+		this.picture = picture;
 	}
 
 	public String getDescription() {
@@ -108,14 +114,5 @@ public class Rental {
 	public void setUpdatedAt(String updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-
-	@Column(name="created_at")
-	private String createdAt;
-	
-	@Column(name="updated_at")
-	private String updatedAt;
-	
-	
-	
 
 }

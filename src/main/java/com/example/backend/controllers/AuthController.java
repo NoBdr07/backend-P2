@@ -12,9 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.backend.models.entities.User;
+import com.example.backend.models.entities.UserDTO;
 import com.example.backend.models.requests.LoginRequest;
 import com.example.backend.models.requests.RegisterRequest;
-import com.example.backend.models.responses.UserResponse;
 import com.example.backend.services.JwtService;
 import com.example.backend.services.UserService;
 import com.nimbusds.oauth2.sdk.TokenResponse;
@@ -53,16 +50,13 @@ public class AuthController {
 	// Register a new user
 	@PostMapping("api/auth/register")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "User registered successfully", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = "{\"token\": \"jwt\"}"), schema = @Schema(implementation = TokenResponse.class))),
+			@ApiResponse(responseCode = "200", description = "User registered successfully", content = @Content(examples = @ExampleObject(value = "{\"token\": \"jwt\"}"), schema = @Schema(implementation = TokenResponse.class))),
 			@ApiResponse(responseCode = "400", description = "Input missing", content = @Content(schema = @Schema())), })
+	
 	public ResponseEntity<Map<String, String>> register(@Valid @RequestBody RegisterRequest request) {
-		// Create new user in the database
-		User user = new User();
-		user.setEmail(request.getEmail());
-		user.setPassword(passwordEncoder.encode(request.getPassword()));
-		user.setName(request.getName());
-
-		userService.saveUser(user);
+		
+		// Create new user in the database	
+		userService.createUser(request.getEmail(), passwordEncoder.encode(request.getPassword()), request.getName());
 
 		// Generate token
 		String token = jwtService.generateToken(request.getEmail());
@@ -73,28 +67,19 @@ public class AuthController {
 
 	}
 
-	// Handle input missing errors
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-		Map<String, String> errors = new HashMap<>();
-		ex.getBindingResult().getAllErrors().forEach((error) -> {
-			String fieldName = ((FieldError) error).getField();
-			String errorMessage = error.getDefaultMessage();
-			errors.put(fieldName, errorMessage);
-		});
-		return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-	}
-
 	// Login with a known user
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "User logged in successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TokenResponse.class))),
-			@ApiResponse(responseCode = "400", description = "Invalid input", content = @Content(schema = @Schema())), })
 	@PostMapping("api/auth/login")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "User logged in successfully", content = @Content(examples = @ExampleObject(value = "{\"token\": \"jwt\"}"), schema = @Schema(implementation = TokenResponse.class))),
+			@ApiResponse(responseCode = "401", description = "Invalid input", content = @Content(examples = @ExampleObject(value = "{\"message\": \"error\"}"), schema = @Schema())), })	
+	
 	public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginRequest request) {
 		User user = userService.getUserByEmail(request.getLogin()).get();
 
 		if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			Map<String, String> errorResponse = new HashMap<>();
+	        errorResponse.put("message", "error");
+			return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
 		}
 
 		String token = jwtService.generateToken(user.getEmail());
@@ -105,13 +90,14 @@ public class AuthController {
 	}
 
 	// Get the user's info
+	@GetMapping("api/auth/me")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "User info loaded successfully", content = @Content(mediaType = "application/json", 
 					examples = @ExampleObject(value = "{\"userId\": \"1\", \"email\": \"test@test.com\", \"name\": \"test\", \"createdAt\": \"2021-10-01T00:00:00Z\", \"updatedAt\": \"2021-10-01T00:00:00Z\"}"), 
-					schema = @Schema(implementation = UserResponse.class))),
+					schema = @Schema(implementation = UserDTO.class))),
 			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())), })
-	@GetMapping("api/auth/me")
-	public UserResponse getCurrentUser() {
+	
+	public UserDTO getCurrentUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null && authentication.getPrincipal() instanceof Jwt) {
 			Jwt jwt = (Jwt) authentication.getPrincipal();
@@ -129,10 +115,7 @@ public class AuthController {
 
 			User user = optionalUser.get();
 
-			UserResponse userResponse = userService.setUserResponse(user.getUserId(), user.getEmail(), user.getName(),
-					user.getCreatedAt(), user.getUpdatedAt());
-
-			return userResponse;
+			return userService.convertToDto(user);
 		}
 		throw new IllegalStateException("User is not authenticated");
 	}

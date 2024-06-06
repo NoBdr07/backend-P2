@@ -1,13 +1,16 @@
 package com.example.backend.services;
 
+import java.util.Date;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.backend.models.entities.User;
-import com.example.backend.models.responses.UserResponse;
+import com.example.backend.models.entities.UserDTO;
 import com.example.backend.repositories.UserRepository;
+import com.example.backend.utils.DateUtils;
 
 @Service
 public class UserService {
@@ -28,14 +31,23 @@ public class UserService {
 		return userRepository.findByEmail(email);
 	}
 	
-	public UserResponse setUserResponse(Integer UserId, String email, String name, String createdAt, String updatedAt) {
-		UserResponse userResponse = new UserResponse();
-		userResponse.setUserId(UserId);
-		userResponse.setEmail(email);
-		userResponse.setName(name);
-		userResponse.setCreatedAt(createdAt);
-		userResponse.setUpdatedAt(updatedAt);
-		return userResponse;
+	public User createUser(String email, String password, String name) {
+		User newUser = new User();
+		newUser.setEmail(email);
+		newUser.setPassword(password);
+		newUser.setName(name);
+		
+		String formattedDate = DateUtils.formatToMySQLDateTime(new Date());
+	    newUser.setCreatedAt(formattedDate);
+	    
+		return userRepository.save(newUser);
+	}
+	
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	public UserDTO convertToDto(User user) {
+	    return modelMapper.map(user, UserDTO.class);
 	}
 	
 	
