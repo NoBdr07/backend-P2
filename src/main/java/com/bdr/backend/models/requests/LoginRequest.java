@@ -3,18 +3,18 @@ package com.bdr.backend.models.requests;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class LoginRequest {
-    @Schema(description = "User's login which is its email", example = "exampe@test.com")
-    private String login;
+    @Schema(description = "User's login which is its email", example = "test@test.com")
+    private String email;
 
-    @Schema(description = "User's password", example = "bdr548!")
+    @Schema(description = "User's password", example = "test!31")
     private String password;
 
-    public String getLogin() {
-        return login;
+    public String getEmail() {
+        return email;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

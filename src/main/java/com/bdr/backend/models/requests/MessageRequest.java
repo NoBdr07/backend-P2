@@ -7,16 +7,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class MessageRequest {
-	@Schema(description = "Message content", name = "message")
+	@Schema(description = "Message content", name = "message", example = "Hello, I have a question about the rental")
 	@NotBlank(message = "Message cannot be empty")
 	private String message;
 
-	@Schema(description = "User_id of the author", name = "user_id")
-	@NotNull(message = "User_id cannot be empty")
+	@Schema(description = "User_id of the author", name = "user_id", example = "18")
 	@JsonProperty("user_id")
 	private Integer userId;
 
-	@Schema(description = "Rental concerned by the message", name = "rental_id")
+	@Schema(description = "Rental concerned by the message", name = "rental_id", example = "4")
 	@NotNull(message = "Rental_id cannot be empty")
 	@JsonProperty("rental_id")
 	private Integer rentalId;

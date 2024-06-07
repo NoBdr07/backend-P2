@@ -9,6 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +24,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.bdr.backend.models.dtos.RentalDto;
 import com.bdr.backend.models.entities.Rental;
+import com.bdr.backend.models.entities.User;
 import com.bdr.backend.services.RentalService;
+import com.bdr.backend.services.UserService;
 import com.bdr.backend.utils.PictureUtils;
 
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,13 +37,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "RentalController", description = "Routes related to rentals")
 public class RentalController {
 
 	private RentalService rentalService;
+	private UserService userService;
 
-	public RentalController(RentalService rentalService) {
+	public RentalController(RentalService rentalService, UserService userService) {
 		this.rentalService = rentalService;
+		this.userService = userService;
 	}
 
 	private static final Logger logger = LoggerFactory.getLogger(MessageController.class);
@@ -52,14 +61,14 @@ public class RentalController {
 					+ "\"updatedAt\": \"2021-10-01T00:00:00Z\"},"), schema = @Schema())),
 			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())), })
 	
-	public List<RentalDto> getRentals() {
-		List<Rental> rentals = rentalService.getAllRentals();
+	public Map<String, List<RentalDto>> getRentals() {
+		Map<String, List<RentalDto>> rentalsDto = rentalService.getAllRentals();
 
-		if (rentals.isEmpty()) {
+		if (rentalsDto.isEmpty()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No rentals found");
 		}
 
-		return rentalService.convertListToDto(rentals);
+		return rentalsDto;
 	}
 
 	// Get rental by id
@@ -92,13 +101,20 @@ public class RentalController {
 			@RequestParam(value = "surface", required = false) Integer surface,
 			@RequestParam(value = "price", required = false) Integer price,
 			@RequestParam(value = "picture", required = false) MultipartFile picture,
-			@RequestParam(value = "description", required = false) String description,
-			@RequestParam("owner_id") Integer owner_id) {
+			@RequestParam(value = "description", required = false) String description) {
 		
+		// Add userId since the front-end is not sending it
+					Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+					Jwt jwt = (Jwt) authentication.getPrincipal();
+					String login = jwt.getClaim("login");
+					User user = userService.getUserByEmail(login).get();
+					Integer userId = userService.convertToDto(user).getUserId();
+					
 		// Manage the file upload
 		String filePath = PictureUtils.uploadFile(picture);
 
-		Rental newRental = rentalService.createRental(name, surface, price, filePath, description, owner_id);
+		Rental newRental = rentalService.createRental(name, surface, price, filePath, description, userId);
 		logger.info("Rental created with id: " + newRental.getRentalId());
 
 		Map<String, String> response = new HashMap<>();

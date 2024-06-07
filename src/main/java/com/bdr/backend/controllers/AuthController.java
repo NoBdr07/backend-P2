@@ -12,17 +12,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.bdr.backend.configuration.JwtTokenUtil;
 import com.bdr.backend.models.dtos.UserDto;
 import com.bdr.backend.models.entities.User;
 import com.bdr.backend.models.requests.LoginRequest;
 import com.bdr.backend.models.requests.RegisterRequest;
-import com.bdr.backend.services.JwtService;
 import com.bdr.backend.services.UserService;
 import com.nimbusds.oauth2.sdk.TokenResponse;
 
@@ -34,14 +37,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "AuthController", description = "Routes related to authentication")
 public class AuthController {
 
-	private JwtService jwtService;
+	private JwtTokenUtil jwtService;
 	private UserService userService;
 	private BCryptPasswordEncoder passwordEncoder;
 
-	public AuthController(JwtService jwtService, UserService userService, BCryptPasswordEncoder passwordEncoder) {
+	public AuthController(JwtTokenUtil jwtService, UserService userService, BCryptPasswordEncoder passwordEncoder) {
 		this.jwtService = jwtService;
 		this.userService = userService;
 		this.passwordEncoder = passwordEncoder;
@@ -74,7 +78,7 @@ public class AuthController {
 			@ApiResponse(responseCode = "401", description = "Invalid input", content = @Content(examples = @ExampleObject(value = "{\"message\": \"error\"}"), schema = @Schema())), })	
 	
 	public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginRequest request) {
-		User user = userService.getUserByEmail(request.getLogin()).get();
+		User user = userService.getUserByEmail(request.getEmail()).get();
 
 		if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
 			Map<String, String> errorResponse = new HashMap<>();
@@ -119,5 +123,6 @@ public class AuthController {
 		}
 		throw new IllegalStateException("User is not authenticated");
 	}
+
 
 }

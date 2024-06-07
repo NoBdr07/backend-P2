@@ -1,7 +1,9 @@
 package com.bdr.backend.services;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -24,8 +26,12 @@ public class RentalService {
 	@Autowired
 	private ModelMapper modelMapper;
 	
-	public List<Rental> getAllRentals() {
-		return rentalRepository.findAll();
+	public Map<String, List<RentalDto>>getAllRentals() {
+		List<Rental> rentals = rentalRepository.findAll();
+	    List<RentalDto> rentalDtos = convertListToDto(rentals);
+	    Map<String, List<RentalDto>> response = new HashMap<>();
+	    response.put("rentals", rentalDtos);
+	    return response;
 	}
 	
 	public Optional<Rental> getRentalById(int id) {
@@ -76,7 +82,17 @@ public class RentalService {
 	}
 	
 	public RentalDto convertToDto(Rental rental) {
-		return modelMapper.map(rental, RentalDto.class);
+	    RentalDto rentalDto = new RentalDto();
+	    rentalDto.setId(rental.getRentalId());
+	    rentalDto.setName(rental.getName());
+	    rentalDto.setSurface(rental.getSurface());
+	    rentalDto.setPrice(rental.getPrice());
+	    rentalDto.setPicture(rental.getPicture());
+	    rentalDto.setDescription(rental.getDescription());
+	    rentalDto.setOwner_id(rental.getOwnerId());
+	    rentalDto.setCreatedAt(rental.getCreatedAt());
+	    rentalDto.setUpdatedAt(rental.getUpdatedAt());
+	    return rentalDto;
 	}
 	
 	public List<RentalDto> convertListToDto(List<Rental> rentals) {

@@ -1,4 +1,4 @@
-package com.bdr.backend.services;
+package com.bdr.backend.configuration;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -13,14 +13,14 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 @Service
-public class JwtService {
+public class JwtTokenUtil {
 
 	private JwtEncoder jwtEncoder;
 
-	private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
+	private static final Logger logger = LoggerFactory.getLogger(JwtTokenUtil.class);
 	private String jwtKey = "clesecretedaumoins16characteres.";
 
-	public JwtService(JwtEncoder jwtEncoder) {
+	public JwtTokenUtil(JwtEncoder jwtEncoder) {
 		this.jwtEncoder = jwtEncoder;
 	}
 

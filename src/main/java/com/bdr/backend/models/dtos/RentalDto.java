@@ -2,21 +2,21 @@ package com.bdr.backend.models.dtos;
 
 public class RentalDto {
 
-	private int rentalId;
+	private int id;
 	private String name;
 	private int surface;
 	private int price;
 	private String picture;
 	private String description;
-	private int ownerId;
+	private int owner_id;
 	private String createdAt;
 	private String updatedAt;
 	
-	public int getRentalId() {
-		return rentalId;
+	public int getId() {
+		return id;
 	}
-	public void setRentalId(int rentalId) {
-		this.rentalId = rentalId;
+	public void setId(int id) {
+		this.id = id;
 	}
 	public String getName() {
 		return name;
@@ -48,11 +48,11 @@ public class RentalDto {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public int getOwnerId() {
-		return ownerId;
+	public int getOwner_id() {
+		return owner_id;
 	}
-	public void setOwnerId(int ownerId) {
-		this.ownerId = ownerId;
+	public void setOwner_id(int ownerId) {
+		this.owner_id = ownerId;
 	}
 	public String getCreatedAt() {
 		return createdAt;
