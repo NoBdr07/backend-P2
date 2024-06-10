@@ -57,8 +57,8 @@ public class RentalController {
 			@ApiResponse(responseCode = "200", description = "Rentals info loaded successfully", content = @Content(examples = @ExampleObject(value = "{\"rentalId\": \"1\", "
 					+ "\"name\": \"maison 1\", " + "\"surface\": \"170\", " + "\"price\": \"540000\","
 					+ "\"description\": \"bdr of description\", " + "\"owner_id\": \"1\","
-					+ " \"createdAt\": \"2021-10-01T00:00:00Z\", "
-					+ "\"updatedAt\": \"2021-10-01T00:00:00Z\"},"), schema = @Schema())),
+					+ " \"createdAt\": \"2012/12/02\", "
+					+ "\"updatedAt\": \"2012/12/02\"},"), schema = @Schema())),
 			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())), })
 	
 	public Map<String, List<RentalDto>> getRentals() {
@@ -81,8 +81,8 @@ public class RentalController {
 			@ApiResponse(responseCode = "200", description = "Rental info loaded successfully", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = "{\"rentalId\": \"1\", "
 					+ "\"name\": \"maison 1\", " + "\"surface\": \"170\", " + "\"price\": \"540000\","
 					+ "\"description\": \"bdr of description\", " + "\"owner_id\": \"1\","
-					+ " \"createdAt\": \"2021-10-01T00:00:00Z\", "
-					+ "\"updatedAt\": \"2021-10-01T00:00:00Z\"} "), schema = @Schema())),
+					+ " \"createdAt\": \"2012/12/02\", "
+					+ "\"updatedAt\": \"2012/12/02\"} "), schema = @Schema())),
 			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())), })
 
 	public RentalDto getRental(@PathVariable int rentalId) {

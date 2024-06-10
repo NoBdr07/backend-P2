@@ -2,7 +2,6 @@ package com.bdr.backend.controllers;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

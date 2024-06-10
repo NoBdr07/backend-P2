@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -97,7 +95,7 @@ public class AuthController {
 	@GetMapping("api/auth/me")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "User info loaded successfully", content = @Content(mediaType = "application/json", 
-					examples = @ExampleObject(value = "{\"userId\": \"1\", \"email\": \"test@test.com\", \"name\": \"test\", \"createdAt\": \"2021-10-01T00:00:00Z\", \"updatedAt\": \"2021-10-01T00:00:00Z\"}"), 
+					examples = @ExampleObject(value = "{\"userId\": \"1\", \"email\": \"test@test.com\", \"name\": \"test\", \"createdAt\": \"2022/02/02\", \"updatedAt\": \"2022/08/02\"}"), 
 					schema = @Schema(implementation = UserDto.class))),
 			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())), })
 	

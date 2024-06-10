@@ -3,13 +3,16 @@
 This projet is a REST API developped on Eclipse with Spring and specifically Spring Security.    
 It was made to handle data requests for the front-end rental app ChâTop.   
 It allows users of this app to :  
-	- Register  
-	- Login  
-	- Get all rentals data  
-	- See specific data concerning a rental  
-	- Create a new rental  
-	- Send a message to a rental owner  
-	- See infos about its own account.  
+<ul>
+	<li>Register  </li>
+	<li>Login  </li>
+	<li>Get all rentals data  </li>
+	<li>See specific data concerning a rental  </li>
+	<li>Create a new rental  </li>
+	<li>Send a message to a rental owner  </li>
+	<li>See infos about its own account.  </li>
+	
+</ul>
 
 ## Installation
 
@@ -56,14 +59,18 @@ Create your database with the following commands :
 		CONSTRAINT fk_rental_id FOREIGN KEY (rental_id) REFERENCES rentals (id),
 		CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users (id) );
 		
-Then you'll have to add environment variable for the sensitive data :   
-	- SPRING_DATASOURCE_USERNAME : for your mysql username,  
-	- SPRING_DATASOURCE_PASSWORD : for your mysql password,  
-	- JWT_SECRET : for the secret key of the jwt tokens, it must be at least 16 characters.  
-	
+Then you'll have to add environment variable for the sensitive data :<ul>
+	<li>SPRING_DATASOURCE_USERNAME : for your mysql username,  </li>
+	<li>SPRING_DATASOURCE_PASSWORD : for your mysql password, </li>
+	<li>JWT_SECRET : for the secret key of the jwt tokens, it must be at least 16 characters. </li>  
+</ul>
 In application.properties, you can change the port if you're not going to use 3001.
 
 ## Architecture 
+
+Requests security is managed with jwt tokens :  
+--> Users login with their email and password --> the API check if they are present in the database --> give a token to access all the routes.
+
 ```
 +---src
 |   +---main

@@ -1,4 +1,4 @@
-package com.bdr.backend.models.responses;
+package com.bdr.backend.models.requests;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
