@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import javax.crypto.spec.SecretKeySpec;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -27,6 +28,9 @@ import com.nimbusds.jose.jwk.source.ImmutableSecret;
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig {
+	
+	@Value("${jwt.secret}")
+    private String jwtKey;
 	
 	// CORS configuration (to allow requests from the frontend)
 	@Bean
@@ -70,9 +74,7 @@ public class SpringSecurityConfig {
 		SecretKeySpec secretKey = new SecretKeySpec(this.jwtKey.getBytes(), "HmacSHA256");
 		return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS256).build();
 	}
-
-	private String jwtKey = "clesecretedaumoins16characteres.";
-
+	
 	@Bean
 	public JwtEncoder jwtEncoder() {
 		return new NimbusJwtEncoder(new ImmutableSecret<>(this.jwtKey.getBytes()));
