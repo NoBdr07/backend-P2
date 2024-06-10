@@ -24,7 +24,7 @@ public class PictureUtils {
 
 	                file.transferTo(convFile);
 
-	                return "http://localhost:3001/uploads/" + file.getOriginalFilename();
+	                return "/uploads/" + file.getOriginalFilename();
 	                
 	            } catch (IOException e) {
 	                e.printStackTrace();

@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.bdr.backend.models.dtos.RentalDto;
 import com.bdr.backend.models.entities.Rental;
@@ -20,11 +21,14 @@ import com.bdr.backend.utils.DateUtils;
 @Service
 public class RentalService {
 	
-	@Autowired
-	private RentalRepository rentalRepository;
+	@Value("${api.host}")
+    private String apiHost;
+
+    @Value("${server.port}")
+    private int apiPort;
 	
 	@Autowired
-	private ModelMapper modelMapper;
+	private RentalRepository rentalRepository;
 	
 	public Map<String, List<RentalDto>>getAllRentals() {
 		List<Rental> rentals = rentalRepository.findAll();
@@ -98,5 +102,14 @@ public class RentalService {
 	public List<RentalDto> convertListToDto(List<Rental> rentals) {
 		return rentals.stream().map(rental -> convertToDto(rental)).toList();
 	}
+	
+	 public String constructFullUrl(String relativePath) {
+	        return UriComponentsBuilder.newInstance()
+	        		.scheme("http")
+	                .host(apiHost)
+	                .port(apiPort)
+	                .path(relativePath)
+	                .toUriString();
+	    }
 
 }

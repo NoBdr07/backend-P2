@@ -67,6 +67,10 @@ public class RentalController {
 		if (rentalsDto.isEmpty()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No rentals found");
 		}
+		
+		 rentalsDto.forEach((k, v) -> v.forEach(rental -> {
+	            rental.setPicture(rentalService.constructFullUrl(rental.getPicture()));
+	        }));
 
 		return rentalsDto;
 	}
@@ -88,7 +92,10 @@ public class RentalController {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Rental not found");
 		}
 
-		return rentalService.convertToDto(optionalRental.get());
+		RentalDto rentalDto = rentalService.convertToDto(optionalRental.get());
+        rentalDto.setPicture(rentalService.constructFullUrl(rentalDto.getPicture()));
+        logger.info("Picture url: " + rentalDto.getPicture());
+        return rentalDto;
 	}
 
 	// Create a new Rental
