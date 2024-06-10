@@ -47,9 +47,8 @@ public class MessageController {
 
 	public ResponseEntity<Map<String, String>> sendMessage(@Valid @RequestBody MessageRequest request) {
 		try {
-			// Add userId since the front-end is not sending it
+			// Get the userId from the token
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
 			Jwt jwt = (Jwt) authentication.getPrincipal();
 			String login = jwt.getClaim("login");
 			User user = userService.getUserByEmail(login).get();

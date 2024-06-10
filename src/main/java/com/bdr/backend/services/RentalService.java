@@ -21,6 +21,7 @@ import com.bdr.backend.utils.DateUtils;
 @Service
 public class RentalService {
 	
+	// Get the api host and port from the application.properties file
 	@Value("${api.host}")
     private String apiHost;
 
@@ -30,7 +31,7 @@ public class RentalService {
 	@Autowired
 	private RentalRepository rentalRepository;
 	
-	public Map<String, List<RentalDto>>getAllRentals() {
+	public Map<String, List<RentalDto>> getAllRentals() {
 		List<Rental> rentals = rentalRepository.findAll();
 	    List<RentalDto> rentalDtos = convertListToDto(rentals);
 	    Map<String, List<RentalDto>> response = new HashMap<>();
@@ -103,6 +104,7 @@ public class RentalService {
 		return rentals.stream().map(rental -> convertToDto(rental)).toList();
 	}
 	
+	// Method to construct the full url when the picture need to be displayed in the front-end
 	 public String constructFullUrl(String relativePath) {
 	        return UriComponentsBuilder.newInstance()
 	        		.scheme("http")

@@ -26,7 +26,6 @@ public class UserService {
 	}
 
 	public User saveUser(User user) {
-		// Make sure to hash the password before saving
 		return userRepository.save(user);
 	}
 

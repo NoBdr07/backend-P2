@@ -36,7 +36,11 @@ public class UserController {
 	// Get user info by userId
 	@GetMapping("api/user/{userId}")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "User info loaded successfully", content = @Content(examples = @ExampleObject(value = "{\"userId\": \"1\", \"email\": \"test@test.com\", \"name\": \"test\", \"createdAt\": \"2021-10-01T00:00:00Z\", \"updatedAt\": \"2021-10-01T00:00:00Z\"}"), schema = @Schema(implementation = UserDto.class))),
+			@ApiResponse(responseCode = "200", description = "User info loaded successfully", 
+					content = @Content(examples = @ExampleObject(
+							value = "{\"userId\": \"1\", \"email\": \"test@test.com\", \"name\": \"test\", "
+									+ "\"createdAt\": \"2021/10/01\", \"updatedAt\": \"2021/10/01\"}"), 
+					schema = @Schema(implementation = UserDto.class))),
 			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())), })
 
 	public UserDto getUser(@PathVariable int userId) {

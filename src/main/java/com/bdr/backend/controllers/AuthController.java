@@ -77,7 +77,8 @@ public class AuthController {
 	
 	public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginRequest request) {
 		User user = userService.getUserByEmail(request.getEmail()).get();
-
+		
+		// check if the user exists and the password is correct
 		if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
 			Map<String, String> errorResponse = new HashMap<>();
 	        errorResponse.put("message", "error");

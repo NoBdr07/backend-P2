@@ -3,8 +3,7 @@ package com.bdr.backend.configuration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -14,11 +13,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class JwtTokenUtil {
+	
+	// Get the secret key from the environment variables
+	@Value("${jwt_secret}")
+	private String jwtKey;
 
 	private JwtEncoder jwtEncoder;
-
-	private static final Logger logger = LoggerFactory.getLogger(JwtTokenUtil.class);
-	private String jwtKey = "clesecretedaumoins16characteres.";
 
 	public JwtTokenUtil(JwtEncoder jwtEncoder) {
 		this.jwtEncoder = jwtEncoder;
@@ -34,12 +34,8 @@ public class JwtTokenUtil {
 
 			String token = this.jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
 
-			logger.info("Generated JWT: {}", token);
-			logger.info("Secret key: {}", jwtKey);
-
 			return token;
 		} catch (Exception e) {
-			logger.error("Error generating token", e);
 			throw e;
 		}
 	}

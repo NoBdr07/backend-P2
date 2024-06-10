@@ -24,6 +24,7 @@ public class SwaggerConfig {
 		return new Info().title("Backend API").description("Backend API for rentals app").version("1.0");
 	}
 	
+	// Allow the swagger interface to authenticate with the API and therefore try the routes that require authentication
 	private SecurityScheme createAPIKeyScheme() {
 	    return new SecurityScheme().type(SecurityScheme.Type.HTTP)
 	        .bearerFormat("JWT")
