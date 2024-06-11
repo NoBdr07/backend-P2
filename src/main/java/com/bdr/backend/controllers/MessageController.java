@@ -33,7 +33,12 @@ public class MessageController {
 	@Autowired
 	private JwtService jwtService;
 
-	// Send a message to a rental owner
+	/**
+	 * Send a message to a rental owner
+	 * 
+	 * @param request	A MessageRequest object containing the message and the rental id
+	 * @return ResponseEntity<Map<String, String>> A response containing the status of the message sending
+	 */
 	@PostMapping("api/messages")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Message send with success", content = @Content(examples = @ExampleObject(value = "{\"message\": \"message send with success\"}"))),

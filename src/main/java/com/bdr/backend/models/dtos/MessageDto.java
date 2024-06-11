@@ -1,11 +1,15 @@
 package com.bdr.backend.models.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class MessageDto {
 
 	private int messageId;
 	private int rentalId;
 	private int userId;
 	private String message;
+	
+	@JsonProperty("created_at")
 	private String createdAt;
 
 	public int getUserId() {

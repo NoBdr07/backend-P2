@@ -11,6 +11,12 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
 public class SwaggerConfig {
+	
+	/**
+	 * 	Configure Swagger to get an interface that displays all the routes of the API
+	 * 
+	 * @return OpenAPI object
+	 */
 	@Bean
 	public OpenAPI customOpenAPI() {
 		return new OpenAPI()
@@ -20,11 +26,21 @@ public class SwaggerConfig {
 				.info(apiInfo());
 	}
 
+	/**
+	 * Configure the API info
+	 * 
+	 * @return Info object
+	 */
 	private Info apiInfo() {
 		return new Info().title("Backend API").description("Backend API for rentals app").version("1.0");
 	}
 	
-	// Allow the swagger interface to authenticate with the API and therefore try the routes that require authentication
+
+	/**
+	 * Configure the API key scheme for the Swagger interface
+	 * 
+	 * @return SecurityScheme object
+	 */
 	private SecurityScheme createAPIKeyScheme() {
 	    return new SecurityScheme().type(SecurityScheme.Type.HTTP)
 	        .bearerFormat("JWT")

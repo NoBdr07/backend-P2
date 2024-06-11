@@ -24,8 +24,7 @@ import com.bdr.backend.models.entities.User;
 import com.bdr.backend.models.requests.LoginRequest;
 import com.bdr.backend.models.requests.RegisterRequest;
 import com.bdr.backend.services.JwtService;
-import com.bdr.backend.services.UserService;
-import com.nimbusds.oauth2.sdk.TokenResponse;
+import com.bdr.backend.servicesImpl.UserServiceImpl;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -43,16 +42,20 @@ public class AuthController {
 	private JwtService jwtService;
 	
 	@Autowired
-	private UserService userService;
+	private UserServiceImpl userService;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-
-	// Register a new user
+	/**
+	 * Register a new user
+	 * 
+	 * @param request The request body containing the user's email, password and name
+	 * @return ResponseEntity<Map<String, String>>	The response containing the token
+	 */
 	@PostMapping("api/auth/register")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "User registered successfully", content = @Content(examples = @ExampleObject(value = "{\"token\": \"jwt\"}"), schema = @Schema(implementation = TokenResponse.class))),
+			@ApiResponse(responseCode = "200", description = "User registered successfully", content = @Content(examples = @ExampleObject(value = "{\"token\": \"jwt\"}"))),
 			@ApiResponse(responseCode = "400", description = "Input missing", content = @Content(schema = @Schema())), })
 	
 	public ResponseEntity<Map<String, String>> register(@Valid @RequestBody RegisterRequest request) {
@@ -61,15 +64,19 @@ public class AuthController {
 		userService.createUser(request.getEmail(), passwordEncoder.encode(request.getPassword()), request.getName());
 
 		// Generate token
-		String token = jwtService.generateToken(request.getEmail());
 		Map<String, String> tokenResponse = new HashMap<>();
-		tokenResponse.put("token", token);
+		tokenResponse.put("token", jwtService.generateToken(request.getEmail()));
 
 		return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
 
 	}
 
-	// Login with a known user
+	/**
+	 * Login a user
+	 * 
+	 * @param request The request body containing the user's email and password
+	 * @return ResponseEntity<Map<String, String>> The response containing the token
+	 */
 	@PostMapping("api/auth/login")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "User logged in successfully", content = @Content(examples = @ExampleObject(value = "{\"token\": \"jwt\"}"), schema = @Schema())),
@@ -86,14 +93,17 @@ public class AuthController {
 			return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
 		}
 
-		String token = jwtService.generateToken(user.getEmail());
 		Map<String, String> tokenResponse = new HashMap<>();
-		tokenResponse.put("token", token);
+		tokenResponse.put("token", jwtService.generateToken(user.getEmail()));
 
 		return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
 	}
 
-	// Get the user's info
+	/**
+	 * Get the current user
+	 * 
+	 * @return UserDto The user informations except the password
+	 */
 	@GetMapping("api/auth/me")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "User info loaded successfully", content = @Content(mediaType = "application/json", 

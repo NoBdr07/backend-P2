@@ -1,11 +1,17 @@
 package com.bdr.backend.models.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UserDto {
 	
 	private int userId;
 	private String email;
 	private String name;
+	
+	@JsonProperty("created_at")
 	private String createdAt;
+	
+	@JsonProperty("updated_at")
 	private String updatedAt;
 	
 	public int getUserId() {

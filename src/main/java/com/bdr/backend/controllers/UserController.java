@@ -12,7 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.bdr.backend.models.dtos.UserDto;
 import com.bdr.backend.models.entities.User;
-import com.bdr.backend.services.UserService;
+import com.bdr.backend.servicesImpl.UserServiceImpl;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -27,13 +27,18 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class UserController {
 	
 	@Autowired
-	private UserService userService;
+	private UserServiceImpl userService;
 
-	public UserController(UserService userService) {
+	public UserController(UserServiceImpl userService) {
 		this.userService = userService;
 	}
 
-	// Get user info by userId
+	/**
+	 * Get user info from userId
+	 * 
+	 * @param userId The user id that come from the url
+	 * @return UserDto The user info
+	 */
 	@GetMapping("api/user/{userId}")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "User info loaded successfully", 

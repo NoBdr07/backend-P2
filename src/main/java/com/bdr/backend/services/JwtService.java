@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import com.bdr.backend.models.entities.User;
+import com.bdr.backend.servicesImpl.UserServiceImpl;
 
 @Service
 public class JwtService {
@@ -28,7 +29,7 @@ public class JwtService {
 	private JwtEncoder jwtEncoder;
 	
 	@Autowired
-	private UserService userService;
+	private UserServiceImpl userService;
 
 	public String generateToken(String email) {
 		try {

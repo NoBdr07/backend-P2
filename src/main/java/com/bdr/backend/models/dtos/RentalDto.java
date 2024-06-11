@@ -1,5 +1,7 @@
 package com.bdr.backend.models.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class RentalDto {
 
 	private int id;
@@ -9,7 +11,11 @@ public class RentalDto {
 	private String picture;
 	private String description;
 	private int owner_id;
+	
+	@JsonProperty("created_at")
 	private String createdAt;
+	
+	@JsonProperty("updated_at")
 	private String updatedAt;
 	
 	public int getId() {

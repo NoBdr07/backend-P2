@@ -42,7 +42,11 @@ public class RentalController {
 	@Autowired
 	private JwtService jwtService;
 
-	// Get all rentals
+	/**
+	 * Get all rentals
+	 * 
+	 * @return a map containing the list of rentalsDto
+	 */
 	@GetMapping("api/rentals")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Rentals info loaded successfully", 
@@ -59,7 +63,7 @@ public class RentalController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No rentals found");
 		}
 
-		// Add the full URL for each picture in order to display it in the front-end
+		/** Add the full URL for each picture in order to display it in the front-end */
 		rentalsDto.forEach((key, value) -> value.forEach(rental -> {
 			rental.setPicture(rentalService.constructFullUrl(rental.getPicture()));
 		}));
@@ -67,7 +71,12 @@ public class RentalController {
 		return rentalsDto;
 	}
 
-	// Get rental by id
+	/**
+	 * Get a rental by its id
+	 * 
+	 * @param rentalId The id of the rental that come from the URL
+	 * @return a RentalDto 
+	 */
 	@GetMapping("api/rentals/{rentalId}")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Rental info loaded successfully", 
@@ -89,7 +98,16 @@ public class RentalController {
 		return rentalDto;
 	}
 
-	// Create a new Rental
+	/**
+	 * Create a rental
+	 * 
+	 * @param name        The name of the rental
+	 * @param surface     The surface of the rental
+	 * @param price       The price of the rental
+	 * @param picture     The file of the rental's picture
+	 * @param description The description of the rental
+	 * @return a map containing the message "Rental created !"
+	 */
 	@PostMapping("api/rentals")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Rental created with success", 
@@ -102,20 +120,33 @@ public class RentalController {
 			@RequestParam(value = "picture", required = false) MultipartFile picture,
 			@RequestParam(value = "description", required = false) String description) {
 
-		// Get the user id from the token
+		/** Get the user id from the token */
 		Integer userId = jwtService.getUserIdFromToken();
 
-		// Manage the file upload
+		/** Manage the file upload */
 		String filePath = PictureUtils.uploadFile(picture);
 
+		/** Create the rental */
 		rentalService.createRental(name, surface, price, filePath, description, userId);
 
+		/** Return the response */
 		Map<String, String> response = new HashMap<>();
 		response.put("message", "Rental created !");
 		return ResponseEntity.ok(response);
 	}
 
-	// Update a rental
+	/**
+	 * Update a rental
+	 * 
+	 * @param rentalId    The id of the rental that come from the URL
+	 * @param name        The name of the rental
+	 * @param surface     The surface of the rental
+	 * @param price       The price of the rental
+	 * @param picture     The file of the rental's picture
+	 * @param description The description of the rental
+	 * @param owner_id    The id of the owner
+	 * @return a map containing the message "Rental updated !"
+	 */
 	@PutMapping("api/rentals/{rentalId}")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Rental updated !", 

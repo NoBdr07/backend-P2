@@ -58,6 +58,8 @@ Create your database with the following commands :
 		KEY idx_rental_id (rental_id),
 		CONSTRAINT fk_rental_id FOREIGN KEY (rental_id) REFERENCES rentals (id),
 		CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users (id) );
+
+If you use a different name for the database, change the name of the database in application.properties.  
 		
 Then you'll have to add environment variable for the sensitive data :<ul>
 	<li>SPRING_DATASOURCE_USERNAME : for your mysql username,  </li>
@@ -66,10 +68,13 @@ Then you'll have to add environment variable for the sensitive data :<ul>
 </ul>
 In application.properties, you can change the port if you're not going to use 3001.
 
-## Architecture 
+Before trying any routes, check if the database have the data needed.  
+For example, if you want to try the POST/message, you need to have in database a corresponding user and a corresponding rental.  
+You can add data with the help of Postman, start by registering some users and then some rentals.  
+Then you'll be able to try every routes.
 
-Requests security is managed with jwt tokens :  
---> Users login with their email and password --> the API check if they are present in the database --> give a token to access all the routes.
+
+## Architecture 
 
 ```
 +---src
@@ -81,8 +86,6 @@ Requests security is managed with jwt tokens :
 |   |   |               |   BackendApplication.java
 |   |   |               |
 |   |   |               +---configuration
-|   |   |               |       JwtTokenUtil.java		(generate token for authentication)
-|   |   |               |       PasswordEncoderConfig.java		
 |   |   |               |       SpringSecurityConfig.java		
 |   |   |               |       SwaggerConfig.java	(configure swagger to have documented routes)
 |   |   |               |       WebConfig.java	(configure picture file management)
@@ -108,7 +111,6 @@ Requests security is managed with jwt tokens :
 |   |   |               |           LoginRequest.java
 |   |   |               |           MessageRequest.java
 |   |   |               |           RegisterRequest.java
-|   |   |               |           TokenResponse.java
 |   |   |               |
 |   |   |               +---repositories
 |   |   |               |       MessageRepository.java
@@ -116,10 +118,15 @@ Requests security is managed with jwt tokens :
 |   |   |               |       UserRepository.java
 |   |   |               |
 |   |   |               +---services
-|   |   |               |       DatabaseUserDetailsService.java
+|   |   |               |       JwtService.java 		(generate token for authentication)
 |   |   |               |       MessageService.java
 |   |   |               |       RentalService.java
 |   |   |               |       UserService.java
+|   |   |               |
+|   |   |               +---servicesImpl
+|   |   |               |       MessageServiceImpl.java
+|   |   |               |       RentalServiceImpl.java
+|   |   |               |       UserServiceImpl.java
 |   |   |               |
 |   |   |               \---utils
 |   |   |                       DateUtils.java		(manage date format compatibility with mysql)
@@ -138,3 +145,16 @@ Requests security is managed with jwt tokens :
 Swagger is configured in this API to display clear information about the routes.   
 You can go to this url to see an interactive interface : http://localhost:3001/swagger-ui/index.html   
 Or to this url to get a json files about the routes : http://localhost:3001/v3/api-docs  
+
+## Security
+
+Requests security is managed with jwt tokens :  
+--> Users login with their email and password --> the API check if they are present in the database --> give a token to access all the routes.
+
+The authentication logic is managed by AuthController (check if the name and password are right) and JwtService (generate the token).
+
+## Data
+
+Pictures that illustrate the rentals are stored in src/main/resource/static/uploads.   
+Their relative url (example : /uploads/picture_name.jpg) are stored in the table Rentals of the database.  
+This solution is working well for a small app. If the app grows, it would be a better practice to use a cloud.

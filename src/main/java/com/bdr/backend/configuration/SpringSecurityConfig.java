@@ -34,7 +34,13 @@ public class SpringSecurityConfig {
 	@Value("${jwt.secret}")
     private String jwtKey;
 	
-	// CORS configuration (to allow requests from the front-end)
+	
+	
+	/**
+	 * Creates a CorsFilter bean to configure CORS settings.
+	 *
+	 * @return The configured CorsFilter.
+	 */
 	@Bean
 	public CorsFilter corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -51,7 +57,12 @@ public class SpringSecurityConfig {
 	private static final String[] AUTH_WHITELIST = { "/v3/api-docs/**", "/swagger-ui/**", "/api/auth/register",
 			"/api/auth/login", "OPTIONS/**", "/uploads/**"};
 
-	
+	/**
+	 * Configure the security filter chain.
+	 * 
+	 * @param http The HttpSecurity object to configure.
+	 * @return The configured SecurityFilterChain object.
+	 */
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		return http
@@ -60,29 +71,48 @@ public class SpringSecurityConfig {
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(
 						auth -> auth
-						.requestMatchers(AUTH_WHITELIST).permitAll()
 						.anyRequest().authenticated())
 				.oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
 				.build();
 	}
-
-	// Temporary solution since .permitAll() is not working
+	
+	/**
+	 * Configure the web security.
+	 * 
+	 * @return The WebSecurityCustomizer object that allows 
+	 * routes from the AUTH_WHITELIST to be ignored.
+	 */
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		return (web) -> web.ignoring().requestMatchers(AUTH_WHITELIST);
 	}
 
+	/**
+	 * Creates a JwtDecoder bean to decode JWTs.
+	 *
+	 * @return The JwtDecoder bean.
+	 */
 	@Bean
 	public JwtDecoder jwtDecoder() {
 		SecretKeySpec secretKey = new SecretKeySpec(this.jwtKey.getBytes(), "HmacSHA256");
 		return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS256).build();
 	}
 	
+	/**
+	 * Creates a PasswordEncoder bean to encode passwords.
+	 *
+	 * @return The PasswordEncoder bean.
+	 */
 	@Bean
 	public JwtEncoder jwtEncoder() {
 		return new NimbusJwtEncoder(new ImmutableSecret<>(this.jwtKey.getBytes()));
 	}
 	
+	/**
+	 * Creates a PasswordEncoder bean to encode passwords.
+	 *
+	 * @return The PasswordEncoder bean.
+	 */
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
