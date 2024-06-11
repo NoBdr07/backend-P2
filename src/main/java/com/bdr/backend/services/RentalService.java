@@ -51,6 +51,8 @@ public class RentalService {
 		newRental.setPicture(picture);
 		newRental.setDescription(description);
 		newRental.setOwnerId(ownerId);
+		newRental.setCreatedAt(DateUtils.formatToMySQLDateTime(new Date()));
+		
 		rentalRepository.save(newRental);
 		
 		return newRental;

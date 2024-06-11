@@ -47,6 +47,7 @@ public class AuthController {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
 
 	// Register a new user
 	@PostMapping("api/auth/register")

@@ -33,7 +33,6 @@ public class SpringSecurityConfig {
 	
 	@Value("${jwt.secret}")
     private String jwtKey;
-
 	
 	// CORS configuration (to allow requests from the front-end)
 	@Bean
