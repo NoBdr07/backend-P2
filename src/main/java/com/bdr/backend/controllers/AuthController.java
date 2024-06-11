@@ -2,15 +2,15 @@ package com.bdr.backend.controllers;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.bdr.backend.configuration.JwtTokenUtil;
 import com.bdr.backend.models.dtos.UserDto;
 import com.bdr.backend.models.entities.User;
 import com.bdr.backend.models.requests.LoginRequest;
 import com.bdr.backend.models.requests.RegisterRequest;
+import com.bdr.backend.services.JwtService;
 import com.bdr.backend.services.UserService;
 import com.nimbusds.oauth2.sdk.TokenResponse;
 
@@ -39,15 +39,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "AuthController", description = "Routes related to authentication")
 public class AuthController {
 
-	private JwtTokenUtil jwtService;
+	@Autowired
+	private JwtService jwtService;
+	
+	@Autowired
 	private UserService userService;
-	private BCryptPasswordEncoder passwordEncoder;
-
-	public AuthController(JwtTokenUtil jwtService, UserService userService, BCryptPasswordEncoder passwordEncoder) {
-		this.jwtService = jwtService;
-		this.userService = userService;
-		this.passwordEncoder = passwordEncoder;
-	}
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	// Register a new user
 	@PostMapping("api/auth/register")
@@ -72,10 +71,11 @@ public class AuthController {
 	// Login with a known user
 	@PostMapping("api/auth/login")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "User logged in successfully", content = @Content(examples = @ExampleObject(value = "{\"token\": \"jwt\"}"), schema = @Schema(implementation = TokenResponse.class))),
+			@ApiResponse(responseCode = "200", description = "User logged in successfully", content = @Content(examples = @ExampleObject(value = "{\"token\": \"jwt\"}"), schema = @Schema())),
 			@ApiResponse(responseCode = "401", description = "Invalid input", content = @Content(examples = @ExampleObject(value = "{\"message\": \"error\"}"), schema = @Schema())), })	
 	
 	public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginRequest request) {
+		
 		User user = userService.getUserByEmail(request.getEmail()).get();
 		
 		// check if the user exists and the password is correct
@@ -101,26 +101,22 @@ public class AuthController {
 			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())), })
 	
 	public UserDto getCurrentUser() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null && authentication.getPrincipal() instanceof Jwt) {
-			Jwt jwt = (Jwt) authentication.getPrincipal();
-			String login = jwt.getClaim("login");
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-			if (login == null) {
-				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login claim not found in token");
-			}
+	    if (authentication == null || !(authentication.getPrincipal() instanceof Jwt)) {
+	        throw new IllegalStateException("User is not authenticated");
+	    }
 
-			Optional<User> optionalUser = userService.getUserByEmail(login);
+	    Jwt jwt = (Jwt) authentication.getPrincipal();
+	    String login = jwt.getClaim("login");
 
-			if (!optionalUser.isPresent()) {
-				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found");
-			}
+	    if (login == null) {
+	        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login claim not found in token");
+	    }
 
-			User user = optionalUser.get();
-
-			return userService.convertToDto(user);
-		}
-		throw new IllegalStateException("User is not authenticated");
+	    return userService.getUserByEmail(login)
+	            .map(userService::convertToDto)
+	            .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
 	}
 
 

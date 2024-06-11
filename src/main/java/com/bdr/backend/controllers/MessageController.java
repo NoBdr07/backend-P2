@@ -3,19 +3,16 @@ package com.bdr.backend.controllers;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bdr.backend.models.entities.User;
 import com.bdr.backend.models.requests.MessageRequest;
+import com.bdr.backend.services.JwtService;
 import com.bdr.backend.services.MessageService;
-import com.bdr.backend.services.UserService;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -30,29 +27,23 @@ import jakarta.validation.Valid;
 @Tag(name = "MessagesController", description = "Routes related to messages")
 public class MessageController {
 
+	@Autowired
 	private MessageService messageService;
-	private UserService userService;
-
-	public MessageController(MessageService messageService, UserService userService) {
-		this.messageService = messageService;
-		this.userService = userService;
-	}
+	
+	@Autowired
+	private JwtService jwtService;
 
 	// Send a message to a rental owner
 	@PostMapping("api/messages")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Message send with success", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = "{\"message\": \"message send with success\"}"))),
+			@ApiResponse(responseCode = "200", description = "Message send with success", content = @Content(examples = @ExampleObject(value = "{\"message\": \"message send with success\"}"))),
 			@ApiResponse(responseCode = "400", description = "Input missing", content = @Content(schema = @Schema())),
 			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())), })
 
 	public ResponseEntity<Map<String, String>> sendMessage(@Valid @RequestBody MessageRequest request) {
 		try {
 			// Get the userId from the token
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			Jwt jwt = (Jwt) authentication.getPrincipal();
-			String login = jwt.getClaim("login");
-			User user = userService.getUserByEmail(login).get();
-			Integer userId = userService.convertToDto(user).getUserId();
+			Integer userId =  jwtService.getUserIdFromToken();
 
 			// Create new message in the database
 			messageService.createMessage(request.getMessage(), userId, request.getRentalId());

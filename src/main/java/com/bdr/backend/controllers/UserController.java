@@ -54,6 +54,5 @@ public class UserController {
 		User user = optionalUser.get();
 		
 		return userService.convertToDto(user);
-
 	}
 }

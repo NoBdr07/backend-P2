@@ -11,19 +11,25 @@ import jakarta.persistence.Table;
 @Table(name = "messages")
 public class Message {
 	@Id
-	@Column(name="id")
+	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int messageId;
-	
-	@Column(name="rental_id")
+
+	@Column(name = "rental_id")
 	private int rentalId;
-	
-	@Column(name="user_id")
+
+	@Column(name = "user_id")
 	private int userId;
-	
-	@Column(name="message")
+
+	@Column(name = "message")
 	private String message;
-	
+
+	@Column(name = "created_at")
+	private String createdAt;
+
+	@Column(name = "updated_at")
+	private String updatedAt;
+
 	public int getMessageId() {
 		return messageId;
 	}
@@ -71,11 +77,5 @@ public class Message {
 	public void setUpdatedAt(String updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-
-	@Column(name="created_at")
-	private String createdAt;
-	
-	@Column(name="updated_at")
-	private String updatedAt;
 
 }

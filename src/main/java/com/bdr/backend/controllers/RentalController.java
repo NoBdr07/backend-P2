@@ -5,11 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,9 +20,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.bdr.backend.models.dtos.RentalDto;
 import com.bdr.backend.models.entities.Rental;
-import com.bdr.backend.models.entities.User;
+import com.bdr.backend.services.JwtService;
 import com.bdr.backend.services.RentalService;
-import com.bdr.backend.services.UserService;
 import com.bdr.backend.utils.PictureUtils;
 
 import io.swagger.v3.oas.annotations.media.Content;
@@ -39,13 +36,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "RentalController", description = "Routes related to rentals")
 public class RentalController {
 
+	@Autowired
 	private RentalService rentalService;
-	private UserService userService;
-
-	public RentalController(RentalService rentalService, UserService userService) {
-		this.rentalService = rentalService;
-		this.userService = userService;
-	}
+	
+	@Autowired
+	private JwtService jwtService;
 
 	// Get all rentals
 	@GetMapping("api/rentals")
@@ -108,11 +103,7 @@ public class RentalController {
 			@RequestParam(value = "description", required = false) String description) {
 
 		// Get the user id from the token
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Jwt jwt = (Jwt) authentication.getPrincipal();
-		String login = jwt.getClaim("login");
-		User user = userService.getUserByEmail(login).get();
-		Integer userId = userService.convertToDto(user).getUserId();
+		Integer userId = jwtService.getUserIdFromToken();
 
 		// Manage the file upload
 		String filePath = PictureUtils.uploadFile(picture);
