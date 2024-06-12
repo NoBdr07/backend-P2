@@ -1,6 +1,6 @@
 # Back-end du projet 3 : Développez le back-end en utilisant Java et Spring
 
-This projet is a REST API developped on Eclipse with Spring and specifically Spring Security.    
+This projet is a REST API developped on Eclipse with Spring 3.3.0 and Java 17.    
 It was made to handle data requests for the front-end rental app ChâTop.   
 It allows users of this app to :  
 <ul>
@@ -66,12 +66,20 @@ Then you'll have to add environment variable for the sensitive data :<ul>
 	<li>SPRING_DATASOURCE_PASSWORD : for your mysql password, </li>
 	<li>JWT_SECRET : for the secret key of the jwt tokens, it must be at least 16 characters. </li>  
 </ul>
+
 In application.properties, you can change the port if you're not going to use 3001.
+
+Then you can do a    `mvn spring-boot:run`     to run the API.
+
+You can try it with postman or directly from the front-end.  
+Make sure that the front-end is set to use an API on server port 3001 or the one you chose.
 
 Before trying any routes, check if the database have the data needed.  
 For example, if you want to try the POST/message, you need to have in database a corresponding user and a corresponding rental.  
 You can add data with the help of Postman, start by registering some users and then some rentals.  
 Then you'll be able to try every routes.
+For the routes that need authentication, you need to set the authorization in postman.
+Select the Auth Type "Bearer Token" and put the token you got from the login.
 
 
 ## Architecture 
