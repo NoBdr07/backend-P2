@@ -9,7 +9,7 @@ public class DateUtils {
 	/**
 	 * This method is used to format the date to a MySQL compatible format
 	 * 
-	 * @param date
+	 * @param date date to format
 	 * @return String - formatted date
 	 */
 	public static String formatToMySQLDateTime(Date date) {

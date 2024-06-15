@@ -59,12 +59,12 @@ public class RentalServiceImpl implements RentalService {
 	/**
 	 * Create a new rental
 	 * 
-	 * @param name 
-	 * @param surface 
-	 * @param price 
-	 * @param picture 
-	 * @param description
-	 * @param ownerId
+	 * @param name Name of the rental
+	 * @param surface Surface of the house
+	 * @param price Price per night
+	 * @param picture Relative url of the picture like /uploads/example.jpg
+	 * @param description Description of the house
+	 * @param ownerId Owner Id of the house
 	 * @return an optional rental object
 	 */
 	public Rental createRental(String name, Integer surface, Integer price, String picture, String description, Integer ownerId) {
@@ -85,13 +85,13 @@ public class RentalServiceImpl implements RentalService {
 	/**
 	 * Update a rental
 	 * 
-	 * @param rentalId
-	 * @param name
-	 * @param surface
-	 * @param price
-	 * @param filePath
-	 * @param description
-	 * @param ownerId
+	 * @param rentalId Id of the rental in db
+	 * @param name Name of the rental
+	 * @param surface Surface of the house
+	 * @param price Price per night
+	 * @param filePath Url of the picture file
+	 * @param description Description of the house
+	 * @param ownerId Owner Id the db
 	 * @return an optional rental object
 	 */
 	public Rental updateRental(int rentalId, String name, Integer surface, Integer price, String filePath, String description, Integer ownerId) {
@@ -112,7 +112,7 @@ public class RentalServiceImpl implements RentalService {
 
 	/**
 	 * Check if the value is not null and update the rental object.
-	 * To simplify the update process, we use the Consumer functional interface
+	 * To simplify the update process
 	 */
 	private <T> void updateIfNotNull(T value, Consumer<T> setter) {
 	    if (value != null) {
@@ -147,7 +147,7 @@ public class RentalServiceImpl implements RentalService {
 	 * @return a list of rental DTO objects
 	 */
 	public List<RentalDto> convertListToDto(List<Rental> rentals) {
-		return rentals.stream().map(rental -> convertToDto(rental)).toList();
+		return rentals.stream().map(this::convertToDto).toList();
 	}
 	
 	/**	

@@ -11,7 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
 	 * This method is used to add resource handlers for the application
 	 * specifically for the file path of the images
 	 * 
-	 * @param registry
+	 * @param registry Object that allows to configure management of static resources
 	 */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

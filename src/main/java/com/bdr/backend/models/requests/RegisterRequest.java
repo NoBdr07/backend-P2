@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+
 public class RegisterRequest {
 	@Schema(description = "User email", name = "email", example = "testBis@test.com")
 	@NotBlank(message = "Email cannot be null")
@@ -33,7 +34,7 @@ public class RegisterRequest {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName( String name) {
 		this.name = name;
 	}
 
@@ -44,5 +45,4 @@ public class RegisterRequest {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
 }

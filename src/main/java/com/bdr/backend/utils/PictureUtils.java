@@ -29,14 +29,13 @@ public class PictureUtils {
 				Path path = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
 				File convFile = new File(path.toString());
 
-				/** save the file to the uploads directory */
+				// save the file to the uploads directory
 				file.transferTo(convFile);
 
-				/** return uploads + the file name to store it in the database */
+				// return uploads + the file name to store it in the database
 				return "/uploads/" + file.getOriginalFilename();
 
 			} catch (IOException e) {
-				e.printStackTrace();
 				throw new RuntimeException("Failed to store file " + e.getMessage());
 			}
 		}

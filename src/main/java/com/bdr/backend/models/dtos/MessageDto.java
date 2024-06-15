@@ -12,6 +12,22 @@ public class MessageDto {
 	@JsonProperty("created_at")
 	private String createdAt;
 
+	public int getMessageId() {
+		return messageId;
+	}
+
+	public void setMessageId(int messageId) {
+		this.messageId = messageId;
+	}
+
+	public int getRentalId() {
+		return rentalId;
+	}
+
+	public void setRentalId(int rentalId) {
+		this.rentalId = rentalId;
+	}
+
 	public int getUserId() {
 		return userId;
 	}
@@ -34,21 +50,5 @@ public class MessageDto {
 
 	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
-	}
-
-	public int getMessageId() {
-		return messageId;
-	}
-
-	public void setMessageId(int messageId) {
-		this.messageId = messageId;
-	}
-
-	public int getRentalId() {
-		return rentalId;
-	}
-
-	public void setRentalId(int rentalId) {
-		this.rentalId = rentalId;
 	}
 }

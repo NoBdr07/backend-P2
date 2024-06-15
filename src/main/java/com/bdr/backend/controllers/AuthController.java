@@ -24,7 +24,7 @@ import com.bdr.backend.models.entities.User;
 import com.bdr.backend.models.requests.LoginRequest;
 import com.bdr.backend.models.requests.RegisterRequest;
 import com.bdr.backend.services.JwtService;
-import com.bdr.backend.servicesImpl.UserServiceImpl;
+import com.bdr.backend.services.UserService;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -42,7 +42,7 @@ public class AuthController {
 	private JwtService jwtService;
 	
 	@Autowired
-	private UserServiceImpl userService;
+	private UserService userService;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -60,7 +60,7 @@ public class AuthController {
 	
 	public ResponseEntity<Map<String, String>> register(@Valid @RequestBody RegisterRequest request) {
 		
-		// Create new user in the database	
+		// Create new user in the database
 		userService.createUser(request.getEmail(), passwordEncoder.encode(request.getPassword()), request.getName());
 
 		// Generate token
@@ -102,7 +102,7 @@ public class AuthController {
 	/**
 	 * Get the current user
 	 * 
-	 * @return UserDto The user informations except the password
+	 * @return UserDto The user information except the password
 	 */
 	@GetMapping("api/auth/me")
 	@ApiResponses(value = {

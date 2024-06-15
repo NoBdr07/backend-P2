@@ -20,11 +20,11 @@ public class MessageRequest {
 	@JsonProperty("rental_id")
 	private Integer rentalId;
 
-	public String getMessage() {
+	public @NotBlank(message = "Message cannot be empty") String getMessage() {
 		return message;
 	}
 
-	public void setMessage(String message) {
+	public void setMessage(@NotBlank(message = "Message cannot be empty") String message) {
 		this.message = message;
 	}
 
@@ -32,15 +32,15 @@ public class MessageRequest {
 		return userId;
 	}
 
-	public void setUserId(Integer newId) {
-		this.userId = newId;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
-	public Integer getRentalId() {
+	public @NotNull(message = "Rental_id cannot be empty") Integer getRentalId() {
 		return rentalId;
 	}
 
-	public void setRentalId(Integer newId) {
-		this.rentalId = newId;
+	public void setRentalId(@NotNull(message = "Rental_id cannot be empty") Integer rentalId) {
+		this.rentalId = rentalId;
 	}
 }

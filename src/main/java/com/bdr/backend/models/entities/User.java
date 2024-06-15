@@ -78,5 +78,4 @@ public class User {
 	public void setUpdatedAt(String updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-	
 }

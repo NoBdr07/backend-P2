@@ -34,10 +34,8 @@ public class SpringSecurityConfig {
 	@Value("${jwt.secret}")
     private String jwtKey;
 	
-	
-	
 	/**
-	 * Creates a CorsFilter bean to configure CORS settings.
+	 * Creates a CorsFilter bean to configure enable the front-end on port 4200
 	 *
 	 * @return The configured CorsFilter.
 	 */
@@ -53,7 +51,7 @@ public class SpringSecurityConfig {
 		return new CorsFilter(source); 
 	}
 
-	// List of routes that do not require authentication
+	/** List of routes that do not require authentication */
 	private static final String[] AUTH_WHITELIST = { "/v3/api-docs/**", "/swagger-ui/**", "/api/auth/register",
 			"/api/auth/login", "OPTIONS/**", "/uploads/**"};
 
@@ -99,9 +97,9 @@ public class SpringSecurityConfig {
 	}
 	
 	/**
-	 * Creates a PasswordEncoder bean to encode passwords.
+	 * Generate signed token.
 	 *
-	 * @return The PasswordEncoder bean.
+	 * @return The JwtEncoder bean.
 	 */
 	@Bean
 	public JwtEncoder jwtEncoder() {

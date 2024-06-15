@@ -2,6 +2,7 @@ package com.bdr.backend.services;
 
 import java.util.Optional;
 
+import com.bdr.backend.models.dtos.UserDto;
 import com.bdr.backend.models.entities.User;
 
 public interface UserService {
@@ -14,4 +15,5 @@ public interface UserService {
 	
 	User createUser(String email, String password, String name);
 
+	UserDto convertToDto(User user);
 }

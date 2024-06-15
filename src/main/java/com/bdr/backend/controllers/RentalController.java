@@ -63,7 +63,7 @@ public class RentalController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No rentals found");
 		}
 
-		/** Add the full URL for each picture in order to display it in the front-end */
+		// Add the full URL for each picture in order to display it in the front-end
 		rentalsDto.forEach((key, value) -> value.forEach(rental -> {
 			rental.setPicture(rentalService.constructFullUrl(rental.getPicture()));
 		}));
@@ -86,10 +86,10 @@ public class RentalController {
 					+ " \"createdAt\": \"2012/12/02\", " + "\"updatedAt\": \"2012/12/02\"} "), schema = @Schema())),
 			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())), })
 
-	public RentalDto getRental(@PathVariable int rentalId) {
+	public RentalDto getRental(@PathVariable("rentalId") int rentalId) {
 		Optional<Rental> optionalRental = rentalService.getRentalById(rentalId);
 
-		if (!optionalRental.isPresent()) {
+		if (optionalRental.isEmpty()) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Rental not found");
 		}
 
@@ -114,22 +114,23 @@ public class RentalController {
 					content = @Content(examples = @ExampleObject(value = "{\"message\": \"Rental created !\"}"))),
 			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())), })
 
-	public ResponseEntity<Map<String, String>> createRental(@RequestParam(value = "name", required = false) String name,
+	public ResponseEntity<Map<String, String>> createRental(
+			@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "surface", required = false) Integer surface,
 			@RequestParam(value = "price", required = false) Integer price,
 			@RequestParam(value = "picture", required = false) MultipartFile picture,
 			@RequestParam(value = "description", required = false) String description) {
 
-		/** Get the user id from the token */
+		// Get the user id from the token
 		Integer userId = jwtService.getUserIdFromToken();
 
-		/** Manage the file upload */
+		// Manage the file upload
 		String filePath = PictureUtils.uploadFile(picture);
 
-		/** Create the rental */
+		// Create the rental
 		rentalService.createRental(name, surface, price, filePath, description, userId);
 
-		/** Return the response */
+		// Return the response
 		Map<String, String> response = new HashMap<>();
 		response.put("message", "Rental created !");
 		return ResponseEntity.ok(response);
@@ -153,7 +154,7 @@ public class RentalController {
 					content = @Content(examples = @ExampleObject(value = "{\"message\": \"Rental updated !\"}"))),
 			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())), })
 
-	public ResponseEntity<Map<String, String>> updateRental(@PathVariable int rentalId,
+	public ResponseEntity<Map<String, String>> updateRental(@PathVariable("rentalId") int rentalId,
 			@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "surface", required = false) Integer surface,
 			@RequestParam(value = "price", required = false) Integer price,
@@ -163,7 +164,7 @@ public class RentalController {
 
 		Optional<Rental> optionalRental = rentalService.getRentalById(rentalId);
 
-		if (!optionalRental.isPresent()) {
+		if (optionalRental.isEmpty()) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Rental not found");
 		}
 

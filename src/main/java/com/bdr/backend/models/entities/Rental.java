@@ -114,5 +114,4 @@ public class Rental {
 	public void setUpdatedAt(String updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-
 }

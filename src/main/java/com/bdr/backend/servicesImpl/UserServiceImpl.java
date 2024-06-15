@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * Get user from user id
 	 * 
-	 * @param userId 
+	 * @param userId Id of the user
 	 * @return Optional<User>
 	 */
 	public Optional<User> getUserFromUserId(int userId) {
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * Save user
 	 * 
-	 * @param user
+	 * @param user User to save
 	 * @return User
 	 */
 	public User saveUser(User user) {
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * Get user from email
 	 * 
-	 * @param email
+	 * @param email Email of the user
 	 * @return Optional<User>
 	 */
 	public Optional<User> getUserByEmail(String email) {
@@ -55,9 +55,9 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * Create user
 	 * 
-	 * @param email
-	 * @param password
-	 * @param name
+	 * @param email email of user
+	 * @param password password encoded
+	 * @param name name of user
 	 * @return User
 	 */
 	public User createUser(String email, String password, String name) {
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * Convert UserDto to User
 	 * 
-	 * @param user
+	 * @param user user to convert
 	 * @return UserDto
 	 */
 	public UserDto convertToDto(User user) {

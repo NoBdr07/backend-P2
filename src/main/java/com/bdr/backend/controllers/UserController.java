@@ -12,7 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.bdr.backend.models.dtos.UserDto;
 import com.bdr.backend.models.entities.User;
-import com.bdr.backend.servicesImpl.UserServiceImpl;
+import com.bdr.backend.services.UserService;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -27,11 +27,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class UserController {
 	
 	@Autowired
-	private UserServiceImpl userService;
-
-	public UserController(UserServiceImpl userService) {
-		this.userService = userService;
-	}
+	private UserService userService;
 
 	/**
 	 * Get user info from userId
@@ -52,12 +48,10 @@ public class UserController {
 
 		Optional<User> optionalUser = userService.getUserFromUserId(userId);
 
-		if (!optionalUser.isPresent()) {
+		if (optionalUser.isEmpty()) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found");
 		}
-
-		User user = optionalUser.get();
 		
-		return userService.convertToDto(user);
+		return userService.convertToDto(optionalUser.get());
 	}
 }
